@@ -1,10 +1,3 @@
-// body-parser to process the uploaded data
-var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(bodyParser.json());
-
 // express is the server that forms part of the nodejs program
 var express = require('express');
 var path = require("path");
@@ -34,6 +27,13 @@ res.header("Access-Control-Allow-Origin", "*");
 res.header("Access-Control-Allow-Headers", "X-Requested-With");
 next();
 });
+
+// body-parser to process the uploaded data
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 
 // Import the required database connectivity code and set up a database connection
 var fs = require('fs');
