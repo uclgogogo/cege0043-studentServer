@@ -1,3 +1,10 @@
+// body-parser to process the uploaded data
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
+
 // express is the server that forms part of the nodejs program
 var express = require('express');
 var path = require("path");
@@ -26,6 +33,38 @@ app.use(function(req, res, next) {
 res.header("Access-Control-Allow-Origin", "*");
 res.header("Access-Control-Allow-Headers", "X-Requested-With");
 next();
+});
+
+// Import the required database connectivity code and set up a database connection
+var fs = require('fs');
+var pg = require('pg');
+var configtext =
+""+fs.readFileSync("/home/studentuser/certs/postGISConnection.js");
+
+// now convert the configruation file into the correct format -i.e. a name/value pair array
+var configarray = configtext.split(",");
+var config = {};
+for (var i = 0; i < configarray.length; i++) {
+    var split = configarray[i].split(':');
+    config[split[0].trim()] = split[1].trim();
+}
+var pool = new pg.Pool(config);
+
+app.get('/postgistest', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err) {
+            console.log("not able to get connection " + err);
+            res.status(400).send(err);
+        }
+        client.query('SELECT name FROM london_poi', function (err, result) {
+            done();
+            if (err) {
+                console.log(err);
+                res.status(400).send(err);
+            }
+            res.status(200).send(result.rows);
+        });
+    });
 });
 
 // serve static files - e.g. html, css
