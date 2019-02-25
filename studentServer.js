@@ -19,4 +19,4 @@ var filename = path.basename(req.url);
 var extension = path.extname(filename);
 console.log("The file " + filename + " was requested.");
 next();
-});
+}); 
