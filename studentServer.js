@@ -50,6 +50,7 @@ for (var i = 0; i < configarray.length; i++) {
 }
 var pool = new pg.Pool(config);
 
+// add app.get
 app.get('/postgistest', function (req, res) {
     pool.connect(function (err, client, done) {
         if (err) {
@@ -65,6 +66,16 @@ app.get('/postgistest', function (req, res) {
             res.status(200).send(result.rows);
         });
     });
+});
+
+// add post
+app.post('/reflectData',function(req,res){
+// note that we are using POST here as we are uploading data
+// so the parameters form part of the BODY of the request rather
+//than the RESTful API
+console.dir(req.body);
+// for now, just echo the request back to the client
+res.send(req.body);
 });
 
 // serve static files - e.g. html, css
